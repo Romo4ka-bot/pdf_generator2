@@ -35,7 +35,7 @@ public class PdfGeneratorConsumerImpl implements PdfGeneratorConsumer {
         Document document = new Document();
         BaseFont bf = null;
         try {
-            bf = BaseFont.createFont("pdf_generator/src/main/resources/fonts/times_roman.ttf", BaseFont.IDENTITY_H,
+            bf = BaseFont.createFont("/home/times_roman.ttf", BaseFont.IDENTITY_H,
                     BaseFont.EMBEDDED);
         } catch (DocumentException | IOException e) {
             throw new IllegalStateException(e);
@@ -44,7 +44,7 @@ public class PdfGeneratorConsumerImpl implements PdfGeneratorConsumer {
         try {
 
             PdfWriter.getInstance(document,
-                    new FileOutputStream("Statement_DayOff.pdf"));
+                    new FileOutputStream("/home/Statement_DayOff.pdf"));
 
             document.open();
 
@@ -79,7 +79,7 @@ public class PdfGeneratorConsumerImpl implements PdfGeneratorConsumer {
             document.add(signature);
 
             document.close();
-            return Files.readAllBytes(Paths.get("/Users/romanleontev/Documents/pdf_generator2/Statement_DayOff.pdf"));
+            return Files.readAllBytes(Paths.get("/home/Statement_DayOff.pdf"));
         } catch (DocumentException | IOException e) {
             throw new IllegalStateException(e);
         }
@@ -89,7 +89,7 @@ public class PdfGeneratorConsumerImpl implements PdfGeneratorConsumer {
         Document document = new Document();
         BaseFont bf = null;
         try {
-            bf = BaseFont.createFont("pdf_generator/src/main/resources/fonts/times_roman.ttf", BaseFont.IDENTITY_H,
+            bf = BaseFont.createFont("/home/times_roman.ttf", BaseFont.IDENTITY_H,
                     BaseFont.EMBEDDED);
         } catch (DocumentException | IOException e) {
             throw new IllegalStateException(e);
@@ -98,7 +98,7 @@ public class PdfGeneratorConsumerImpl implements PdfGeneratorConsumer {
         try {
 
             PdfWriter.getInstance(document,
-                    new FileOutputStream("Statement_Budget.pdf"));
+                    new FileOutputStream("/home/Statement_Budget.pdf"));
 
             document.open();
 
@@ -107,9 +107,9 @@ public class PdfGeneratorConsumerImpl implements PdfGeneratorConsumer {
                     "от студента очного отделения\n" +
                     "контрактной формы обучения ИТИС\n" +
                     "1 курс, группа 11-101\n" +
-                    statementContentDTO.getSecondName() + "a " +
+                    statementContentDTO.getSecondName() + " " +
                     statementContentDTO.getFirstName() +
-                    "a\n" +
+                    "\n" +
                     "тел. 89177523458\n" +
                     "Адрес: г. Казань, ул. Ленина, д. 5, кв. 15", normal);
             author.setAlignment(Element.ALIGN_RIGHT);
@@ -122,7 +122,7 @@ public class PdfGeneratorConsumerImpl implements PdfGeneratorConsumer {
             document.add(title);
 
             Paragraph text =
-                    new Paragraph("Прошу перевести меня, " + statementContentDTO.getSecondName() + "a " + statementContentDTO.getFirstName() + "a " +
+                    new Paragraph("Прошу перевести меня, " + statementContentDTO.getSecondName() + " " + statementContentDTO.getFirstName() + " " +
                             "с " +
                             "контрактной формы " +
                             "обучения на " +
@@ -141,7 +141,7 @@ public class PdfGeneratorConsumerImpl implements PdfGeneratorConsumer {
             document.add(date);
 
             document.close();
-            return Files.readAllBytes(Paths.get("/Users/romanleontev/Documents/pdf_generator2/Statement_Budget.pdf"));
+            return Files.readAllBytes(Paths.get("/home/Statement_Budget.pdf"));
         } catch (DocumentException | IOException e) {
             throw new IllegalStateException(e);
         }

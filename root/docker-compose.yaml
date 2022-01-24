@@ -5,18 +5,18 @@ services:
   application:
     image:
       pdf_generator_app-image
-    build:
-      context: .
-      dockerfile: pdf_generator/Dockerfile
-    container_name: pdf_generator_app
+    build: pdf_generator/
+    container_name: application
     networks:
       - cloud
     ports:
-      - 80:80
+      - 80:8080
     depends_on:
       - database
       - redis
       - rabbitmq
+    environment:
+      RABBITMQ_HOST: 'rabbitmq'
     logging:
       driver: "json-file"
       options:
@@ -25,24 +25,23 @@ services:
   application2:
     image:
       client_app-image
-    build:
-      context: .
-      dockerfile: client/Dockerfile
-    container_name: client_app
+    build: client/
     networks:
       - cloud
     ports:
-      - 81:81
+      - 81:8080
     depends_on:
+      - application
       - database
       - redis
       - rabbitmq
     environment:
-      - "DB_URL=jdbc:postgresql://database:5432/pdf_generation2"
-      - "DB_USERNAME=postgres"
-      - "DB_PASSWORD=postgres"
-      - "REDIS_HOST=redis"
-      - "REDIS_PORT=6379"
+      DB_URL: "jdbc:postgresql://database:5432/app_db"
+      DB_USERNAME: postgres
+      DB_PASSWORD: qwerty009
+      REDIS_HOST: 'redis'
+      REDIS_PORT: 6379
+      RABBITMQ_HOST: 'rabbitmq'
     logging:
       driver: "json-file"
       options:
@@ -70,8 +69,10 @@ services:
         max-size: "10m"
 
   rabbitmq:
-    image: rabbitmq:3-management
+    image: rabbitmq:3.6-management
     container_name: rabbitmq_container
+    networks:
+      - cloud
     environment:
       RABBITMQ_DEFAULT_USER: guest
       RABBITMQ_DEFAULT_PASS: guest
@@ -80,7 +81,7 @@ services:
       - 15672:15672
   redis:
     image:
-      bitnami/redis:latest
+      redis:5.0.8
     container_name: redis
     networks:
       - cloud
