@@ -1,0 +1,105 @@
+version: '3.3'
+
+services:
+
+  application:
+    image:
+      pdf_generator_app-image
+    build:
+      context: .
+      dockerfile: pdf_generator/Dockerfile
+    container_name: pdf_generator_app
+    networks:
+      - cloud
+    ports:
+      - 80:80
+    depends_on:
+      - database
+      - redis
+      - rabbitmq
+    logging:
+      driver: "json-file"
+      options:
+        max-file: "5"
+        max-size: "10m"
+  application2:
+    image:
+      client_app-image
+    build:
+      context: .
+      dockerfile: client/Dockerfile
+    container_name: client_app
+    networks:
+      - cloud
+    ports:
+      - 81:81
+    depends_on:
+      - database
+      - redis
+      - rabbitmq
+    environment:
+      - "DB_URL=jdbc:postgresql://database:5432/pdf_generation2"
+      - "DB_USERNAME=postgres"
+      - "DB_PASSWORD=postgres"
+      - "REDIS_HOST=redis"
+      - "REDIS_PORT=6379"
+    logging:
+      driver: "json-file"
+      options:
+        max-file: "5"
+        max-size: "10m"
+
+  database:
+    image:
+      postgres
+    container_name: database
+    networks:
+      - cloud
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_DB: app_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: qwerty009
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    logging:
+      driver: "json-file"
+      options:
+        max-file: "5"
+        max-size: "10m"
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: rabbitmq_container
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
+    ports:
+      - 5672:5672
+      - 15672:15672
+  redis:
+    image:
+      bitnami/redis:latest
+    container_name: redis
+    networks:
+      - cloud
+    ports:
+      - 6379:6379
+    volumes:
+      - redis-volume:/data
+    logging:
+      driver: "json-file"
+      options:
+        max-file: "5"
+        max-size: "10m"
+
+volumes:
+  pgdata:
+    external: true
+  redis-volume:
+    external: true
+networks:
+  cloud:
+    external: true
+
